@@ -6,13 +6,13 @@
                     <div class="col s6">
                         <ul>
                             <li class="input-field name">
-                                <input type="text" class="browser-default" placeholder="<?php echo $txt_user; ?>" name="name" required>
+                                <input type="text" class="browser-default" placeholder="<?php echo $txt_user; ?>" name="name" value="" required>
                             </li>
                             <li class="input-field phone">
-                                <input type="phone" class="browser-default" placeholder="<?php echo $txt_userphone; ?>" name="phone" required>
+                                <input type="phone" class="browser-default" placeholder="<?php echo $txt_userphone; ?>" name="phone" value="" required>
                             </li>
                             <li class="input-field email">
-                                <input type="email" class="browser-default" placeholder="<?php echo $txt_useremail; ?>" name="email" required>
+                                <input type="email" class="browser-default" placeholder="<?php echo $txt_useremail; ?>" name="email" value="" required>
                             </li>
                         </ul>
                     </div>
@@ -35,7 +35,6 @@
         event.preventDefault();
 
         var elements = $('#reviewform .input-field ').length;
-        console.log(elements);
 
         $('#reviewform input').each(function () { 
             var nameinp = $(this).attr('name');
@@ -72,6 +71,14 @@
             }
         });
 
+        $('input,textarea').focusin(function() {
+            console.log(this);
+            var row = $(this).parent();
+            console.log(row);
+            $(row).find('.msg').remove();
+        });
+
+
         if($('#reviewform textarea').length > 0){
             var nameta = $('#reviewform textarea').attr('name');
             $('.' + nameta + ' div.msg').remove();
@@ -91,14 +98,17 @@
                 method: "POST",
                 data: $('#reviewform').serialize(),    
                 success: function (data) {
-                    console.log(data);
+                    $("input, textarea").val('');
+
                     json = jQuery.parseJSON(data);
-                    console.log(json);
                     if (json.status == 'error') {
                         $('.push-s3').append('<div class="error msg" style="color: red;">'+ json.message +'</div>');
                     }else{
                         $('.push-s3').append('<div class="success msg" style="color: green;">'+ json.message +'</div>');
                     }
+                    setTimeout(function(){
+                        $('.push-s3 .msg').remove();
+                    }, 2000);
                 }
             });
         }
