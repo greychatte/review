@@ -72,9 +72,7 @@
         });
 
         $('input,textarea').focusin(function() {
-            console.log(this);
             var row = $(this).parent();
-            console.log(row);
             $(row).find('.msg').remove();
         });
 
